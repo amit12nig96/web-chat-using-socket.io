@@ -1,0 +1,106 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:100,400,700');
+
+html, body{
+	height: 100%;
+	margin: 0;
+	font-family: 'Roboto', sans-serif;
+	font-weight: 100;
+}
+
+body{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+#container{
+	width: 80%;
+	height: 80%;
+	display: flex;
+	box-shadow: 0 0 20px rgba(250,0,0,0.8);
+	min-width: 600px;
+}
+aside, #main{
+	flex-grow: 1;
+	height: 100%;
+	min-width: 310px;
+}
+
+aside{
+	background-color:#E7EDED;
+}
+
+#main{
+	background-color:rgba(0,200,0,0.3) ;
+}
+aside header{
+	background-color: rgba(0,0,0,0.7);    /* #343E48  #2F373F*/
+	padding: 10px;
+	padding-bottom: 0;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	color: #fff;
+	font-weight: bold;
+}
+
+aside ul{
+	padding-left:10px;
+	list-style-type: none;
+	overflow: auto;
+}
+
+.amityadav{
+	margin-bottom:-5px;
+	margin-right:-10px;
+}
+
+
+#main{
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+#main footer{
+	background-color: #fff;
+	padding: 10px;
+	display: flex;
+	justify-content: space-between;
+}
+
+#main footer textarea{
+	flex-grow: 2;
+	margin: 0 10px;
+	resize: none;
+	border: none;
+	padding-top: 5px;
+	height: 20px;
+}
+
+#main footer textarea:focus{
+	outline: none;	
+}
+
+#main footer i{
+	color: #c0c0c0;
+	cursor: pointer;
+	cursor: hand;
+}
+
+#messages{
+	overflow: auto;
+	flex-grow: 2;
+	padding: 10px;
+}
+
+#messages .amityadav{
+	margin-right: 10px;
+}
+
+#messages .amityadav{
+	margin-right: 0;
+}
+
+
+

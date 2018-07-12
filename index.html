@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en" >
+
+<head>
+  <meta charset="UTF-8">
+  <title>Web App Socket io Chat</title>
+  <script src="socket.io/socket.io.js" ></script>
+  <script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+<style>
+ @import url('https://fonts.googleapis.com/css?family=Roboto:100,400,700');
+
+html, body{
+	height: 100%;
+	margin: 0;
+	font-family: 'Roboto', sans-serif;
+	font-weight: 100;
+}
+body{
+	display: flex;
+	justify-content: center;
+	align-items: center;}
+#container{
+    width: 80%;
+    height: 100%;
+	display: flex;
+	box-shadow: 0 0 20px rgba(250,0,0,0.8);
+	min-width: 600px;
+}
+aside, #main{
+	flex-grow: 1;
+	height: 100%;
+	min-width: 310px;}
+aside{
+	background-color:#E7EDED;}
+#main{	
+    background-color:rgba(0,200,0,0.3) ;}
+aside header{
+	background-color: rgba(0,0,0,0.7);
+	padding: 10px;
+	padding-bottom: 0;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	color: #fff;
+	font-weight: bold;}
+aside ul{
+	padding-left:10px;
+	list-style-type: none;
+	overflow: auto;}
+.amityadav{
+    
+    margin-left: 15px;
+	margin-bottom:-5px;
+    margin-right:-10px;}
+#main{
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;}
+#main footer{
+	background-color: #fff;
+    display: flex;
+    padding: 10px;
+	justify-content: space-between;}
+#main footer textarea{
+	flex-grow: 2;
+	margin: 0 10px;
+	resize: none;
+	border: none;
+	padding-top: 5px;
+	height: 20px;}
+#main footer textarea:focus{
+	outline: none;}
+#main footer i{
+	color: #c0c0c0;
+	cursor: pointer;
+	cursor: hand;}
+#messages{
+	overflow: auto;
+	flex-grow: 2;
+	padding: 10px;}
+.chatbox{
+    z-index: -1000;
+    padding-left: 10px;
+    padding-top: 3px;
+    font-family: 'Courier New', Courier, monospace;
+}
+.chating{
+    margin-top: 45px;
+    overflow: auto;
+    position: absolute;
+    height: 90%;
+    width:52%;
+}
+
+
+
+.userloginfrm{
+    margin: 15% 10% 20% 35%;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    border-radius: 5px;
+    background-color: #f2f2f2be;
+    padding: 20px;
+}
+.usernametext{
+    border-radius: 4px;
+    height: 25px;
+    padding: 5px 10px;
+}
+.loginbutton{
+    border-radius: 4px;
+    color: black;
+    width: 100%;
+    height: 25px;
+}
+#onlineuser1{
+    display: none;
+}
+#main{
+    display: none;
+} 
+.list-group{
+    padding-left: 20px;
+    background-color: green;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+</style>
+  
+</head>
+
+<body>
+
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<div id="container">
+
+    <div id = "loginform" class = "userloginfrm">
+        <form id ="userloginform">
+       <label>Enter Your Username As your wish</label></br><br>
+       <input class = "usernametext" id ="webusername" type="text" size="35" placeholder="Enter username..."><br><br>
+       <input type= "submit" class = "loginbutton" value="Star chating"> 
+     </form>
+    </div>
+    
+    <div id = "onlineuser1">
+    <aside>
+        <header>
+            <div class="amityadav">Total Web Chat Users Online</div>
+            <i class="material-icons">online</i>
+        </header>
+        <ul class="list-group" id="webusers"></ul>
+    </aside></div>
+    
+    <section id="main">
+        <div class = "chating", id="chating">
+        <section id="messages">
+
+        </section></div>
+        <form id = "messagefrm">
+        <footer>
+            <i class="material-icons">message</i>
+            <textarea id="entermessage"  placeholder="You can type Your Message Here....."></textarea>
+            <i class="material-icons" type="submit">send</i>
+            <!--<input type= "submit" class = "submit" value="Send"> 
+            first time i add sbumit button then i decide it is not esay then i add if press enter then send the message-->
+        </footer>
+    </form>
+</section>
+    </div>
+<script>
+    $(function(){
+        var web_socket= io.connect();
+        var $messagefrm = $('#messagefrm');
+        var $entermessage = $('#entermessage');
+        var $chating = $('#chating');
+        var $main = $('#main');
+        var $onlineuser1 = $('#onlineuser1');
+        var $loginform = $('#loginform');
+        var $userloginform = $('#userloginform');
+        var $webusers = $('#webusers');
+        var $webusername = $('#webusername');
+
+        $entermessage.keypress(function(t){
+            if(t.keyCode == 13){
+            t.preventDefault();
+            web_socket.emit('sending messaging', $entermessage.val());
+            $entermessage.val('');
+        }
+        });
+        web_socket.on('sending the new message', function(webdata){
+        $chating.append('<div class = "chatbox"><strong>'+webdata.user+'</strong> : '+webdata.msgs+'</div>');
+        });
+
+    $userloginform.submit(function(t){
+        t.preventDefault();
+        web_socket.emit('new users',$webusername.val(),function(webdata){
+            if(webdata){
+                $loginform.hide();
+                $main.show();
+                $onlineuser1.show();
+            }
+        });
+        $webusername.val('');
+    });
+    web_socket.on('get users', function(webdata){
+        var html ='';
+
+        for(i=0;i<webdata.length;i++){
+        html += '<li class="list-group" type="circle">'+webdata[i]+'</li>';
+        
+        }
+        $webusers.html(html);
+        
+    });
+    
+    });
+</script>
+</body>
+
+</html>
+
